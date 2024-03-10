@@ -1,0 +1,65 @@
+Sub DetailReport()
+'
+' DetailReport Macro
+' SDS detail report sorting
+' This will also paste the data into the Cashed workbook
+'
+Application.DisplayAlerts = False
+Application.ScreenUpdating = False
+
+Dim wb As Workbook
+Set wb = ActiveWorkbook
+Dim path As String
+    path = "F:\"
+Dim dtToday As String
+    dtToday = Format(Date - 1, "mm-dd-yy")
+    
+If ActiveWorkbook.Name Like "Detail Report*" Then
+
+    Range("J6").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToLeft)).Select
+    Selection.Copy
+    Sheets.Add after:=ActiveSheet
+    Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Columns("B:I").Select
+    Application.CutCopyMode = False
+    Selection.Delete Shift:=xlToLeft
+    Range("A1:B1").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.Copy
+    ActiveWindow.SmallScroll Down:=500
+    
+    Sheets("ReportData 1").Select
+    Range("J6").Select
+    ActiveWindow.SmallScroll Down:=511
+    
+Call pasteData
+ 
+  wb.Activate
+ ChDir path
+    ActiveWorkbook.saveAs Filename:= _
+        path & dtToday & "Detail Report", FileFormat:= _
+        xlOpenXMLWorkbook, CreateBackup:=False
+ wb.Close
+End If
+
+   Application.DisplayAlerts = True
+Application.ScreenUpdating = True
+   
+End Sub
+
+
+
+Sub pasteData()
+Application.DisplayAlerts = False
+Application.ScreenUpdating = False
+Dim y As Workbook  'this is for moving over the the Cash in worksheet and pasteing the data.
+Set y = Workbooks.Open("W:\Shared\2023\Worksheet222.xlsx")
+y.Sheets("Cash In").Range("k560").PasteSpecial
+
+Application.DisplayAlerts = True
+Application.ScreenUpdating = True
+End Sub
